@@ -1,25 +1,15 @@
 ```bash
-ffmpeg \
-  -i bbb_sunflower_1080p_30fps_normal.mp4 \
-  -b:v 2500k \
-  -c:v libx264 \
+# 列出本地的 webcam 名稱
+ffmpeg -f avfoundation -list_devices true -i ""
+
+# 將串流推上 localhost:6666
+ffmpeg -f avfoundation \
+  -framerate 30 \
+  -video_size 1280x720 \
+  -i "0:1" \
   -preset ultrafast \
   -tune zerolatency \
+  -c:v libx264 \
   -f mpegts \
-  -fifo_size 1000000 \
-  udp://host.docker.internal:6666?overrun_nonfatal=1
+  udp://localhost:6666
 ```
-
-# 格式化說明
-* 輸入文件：-i bbb_sunflower_1080p_30fps_normal.mp4
-* 
-# 影片編碼設置：
-* -b:v 2500k：設置比特率為 2500kbps。
-* -c:v libx264：使用 H.264 編碼器。
-* -preset ultrafast：使用最快的編碼模式。
-* -tune zerolatency：優化低延遲。
-
-# 輸出格式：
-* -f mpegts：使用 MPEG-TS 格式。
-* -fifo_size 1000000：設置 FIFO 緩衝大小。
-* 輸出地址：udp://host.docker.internal:6666?overrun_nonfatal=1。

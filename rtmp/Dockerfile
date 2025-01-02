@@ -10,8 +10,11 @@ RUN apt-get update && \
 # 複製 nginx 配置文件
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# 複製 影片
+COPY bbb_sunflower_1080p_30fps_normal.mp4 /root/bbb_sunflower_1080p_30fps_normal.mp4
+
 # 複製 index.html 到 WWW 目錄
 COPY index.html /www/
 
 # 設置工作目錄
-WORKDIR /www
+WORKDIR /root

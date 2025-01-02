@@ -5,6 +5,7 @@ services:
     ports:
       - "1935:1935"
       - "8080:8080"
+      - "6666:6666"
     container_name: rtmp_server
     volumes:
       - ./data:/tmp

@@ -4,7 +4,7 @@ ffmpeg -f avfoundation -list_devices true -i ""
 
 # 監聽串流 (localhost:6666)
 mpv --no-cache --profile=low-latency --video-sync=audio \
-    --demuxer-max-bytes=256k --demuxer-max-back-bytes=64k \
+    --demuxer-max-bytes=256k \
     udp://localhost:6666
 
 # 將串流推上 localhost:6666
@@ -41,8 +41,6 @@ ffmpeg \
 	* 將視頻同步到音頻，減少音視頻不同步的問題。
 * --demuxer-max-bytes=256k:
 	* 設置最大緩衝大小為 256KB，適合低延遲播放。
-* --demuxer-max-back-bytes=64k:
-	* 設置解復用器的最大回退緩衝為 64KB，以減少延遲。
 
 # 輸出串流的參數
 * 輸入相關參數
@@ -80,3 +78,27 @@ ffmpeg \
 		* 指定輸出格式為 MPEG-TS（傳輸流格式）。
 	* udp://localhost:6666:
 		* 將流推送到本地的 UDP 端口 6666。
+
+
+## 會延遲的設定如下
+```bash
+# 監聽串流 (localhost:6666) 
+mpv --no-cache  --video-sync=audio \
+    udp://localhost:6666
+
+# 將串流推上 localhost:6666
+ffmpeg \
+  -f avfoundation \
+  -framerate 30 \
+  -video_size 1280x720 \
+  -i "0:0" \
+  -c:v libx264 \
+  -preset medium \
+  -tune zerolatency \
+  -b:v 20M \
+  -maxrate 20M \
+  -bufsize 10M \
+  -max_delay 0 \
+  -f mpegts \
+  udp://localhost:6666    
+```

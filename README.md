@@ -1,4 +1,7 @@
 ```bash
+# at local
+mpv udp://@:6666
+# at ubuntu
 ffmpeg \
   -i bbb_sunflower_1080p_30fps_normal.mp4 \
   -b:v 2500k \

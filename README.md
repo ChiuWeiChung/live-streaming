@@ -1,4 +1,35 @@
-# 播放 RTMP 串流 (Play RTMP Stream)
+# 直播串流系統 (Live Streaming System)
+
+這個專案是一個簡單的直播串流系統，主要功能有兩個部分：
+
+1. **RTMP 串流伺服器**：使用 Docker 容器部署了一個基於 Nginx 的 RTMP 伺服器，可以接收和分發直播串流。
+
+2. **串流工具**：提供了兩個主要命令：
+   - 使用 ffmpeg 從您的攝像頭和麥克風捕獲視頻和音頻，並將其推送到 RTMP 伺服器
+   - 使用 mpv 播放器從 RTMP 伺服器接收和播放串流
+
+整個設置允許您在本地主機上進行直播串流測試或開發。Docker 容器暴露了多個端口（1935 用於 RTMP，8080 用於 HTTP）。
+
+## 設置說明
+
+### 前置需求
+- Docker 和 Docker Compose
+- ffmpeg (用於推送串流)
+- mpv 播放器 (用於播放串流)
+
+### 啟動 RTMP 伺服器
+```bash
+docker-compose up -d
+```
+
+這將啟動一個 RTMP 伺服器，監聽以下端口：
+- 1935: RTMP 協議
+- 8080: HTTP 服務 (可用於網頁播放器)
+
+## 使用說明
+
+### 播放 RTMP 串流 (Play RTMP Stream)
+```bash
 mpv \
   rtmp://localhost/live/stream \
   --no-cache \
@@ -7,8 +38,10 @@ mpv \
   --hwdec=auto-safe \
   --video-sync=display-resample \
   --audio-buffer=0.5
+```  
 
-# 推送攝像頭和麥克風串流到 RTMP 伺服器 (Push Camera/Mic to RTMP Server)
+### 推送攝像頭和麥克風串流到 RTMP 伺服器 (Push Camera/Mic to RTMP Server)
+```
 ffmpeg \
   -f avfoundation \
   -framerate 30 \
@@ -22,8 +55,11 @@ ffmpeg \
   -b:a 128k \
   -f flv \
   rtmp://localhost/live/stream
+```
 
-## mpv 指令解釋
+## 指令解釋
+
+### mpv 指令解釋
 * rtmp://localhost/live/stream
 	* 指定播放的 RTMP 流地址：
 	* localhost 表示本地 RTMP 伺服器。
@@ -49,7 +85,7 @@ ffmpeg \
 	* 設置音頻緩衝區大小為 0.5 秒：
 	* 增加音頻緩衝區有助於減少音頻設備的緩衝不足（Audio device underrun detected）問題。
 
-## ffmpeg 指令解釋
+### ffmpeg 指令解釋
 * -f avfoundation
 	* 指定輸入格式為 avfoundation（適用於 macOS 的多媒體框架，用於捕獲攝像頭和麥克風）。
 * -framerate 30

@@ -1,5 +1,4 @@
-```bash
-# In Local Machine
+# 播放 RTMP 串流 (Play RTMP Stream)
 mpv \
   rtmp://localhost/live/stream \
   --no-cache \
@@ -9,7 +8,7 @@ mpv \
   --video-sync=display-resample \
   --audio-buffer=0.5
 
-# Push live stream through RTMP to docker container(nginx rtmp server)
+# 推送攝像頭和麥克風串流到 RTMP 伺服器 (Push Camera/Mic to RTMP Server)
 ffmpeg \
   -f avfoundation \
   -framerate 30 \
@@ -23,7 +22,7 @@ ffmpeg \
   -b:a 128k \
   -f flv \
   rtmp://localhost/live/stream
-```
+
 ## mpv 指令解釋
 * rtmp://localhost/live/stream
 	* 指定播放的 RTMP 流地址：
@@ -57,10 +56,10 @@ ffmpeg \
 	* 設置捕獲幀率為 30 幀每秒。
 * -video_size 1280x720
 	* 設置視頻分辨率為 1280x720（HD 分辨率）。
-* -i "0:1"
+* -i "0:0"
 	* 指定輸入設備：
 	* 0 表示第一個視頻輸入設備（通常是默認攝像頭）。
-	* 1 表示第一個音頻輸入設備（通常是默認麥克風）。
+	* 0 表示第一個音頻輸入設備（通常是默認麥克風）。
 * -b:v 1500k
 	* 設置視頻比特率為 1500 kbps，用於平衡視頻質量和帶寬。
 * -preset superfast
@@ -81,11 +80,3 @@ ffmpeg \
 	* 指定 RTMP 推流目標地址：
 	* localhost 表示本地 RTMP 伺服器。
 	* /live/stream 是推流的應用名稱和流名稱。
-
-## mpv 指令解釋
-* rtmp://localhost/live/bbb: 指定 RTMP stream 的播放地址。
-* --no-cache: 禁用緩衝區，以減少播放延遲。
-* --untimed: 忽略時間同步，用於直播流播放。
-* --no-demuxer-thread: 禁用解復用的多線程處理，適合低延遲播放。
-* --video-sync=audio: 將影片同步到音頻，減少音訊跟影片不同步的問題。
-* --vd-lavc-threads=1: 限制影片解碼使用單線程，適合降低延遲的場景。
